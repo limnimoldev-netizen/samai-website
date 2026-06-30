@@ -16,9 +16,7 @@
     <div class="relative z-10 flex flex-col items-center text-center w-full max-w-xl mx-auto space-y-8 sm:space-y-7 my-auto">
         
         <div class="w-56 sm:w-72 md:w-[420px] drop-shadow-xl transition-all">
-            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/samai-logo.png" 
-                 alt="Samai Logo" 
-                 class="w-full h-auto object-contain">
+            
         </div>
 
         <div>
