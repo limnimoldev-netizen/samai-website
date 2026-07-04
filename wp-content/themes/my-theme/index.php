@@ -6,15 +6,33 @@
 <section class="min-h-screen w-full bg-[#3a3942] text-white relative overflow-hidden select-none" style="font-family: 'Montserrat', sans-serif;">
 
     <!-- Nav -->
-    <nav class="relative z-30 mx-4 mt-4 md:mx-8 md:mt-6 bg-[#c2a06d] rounded-md">
-        <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:gap-x-10 py-3 px-4 text-[#2e2d35] font-semibold text-xs md:text-sm tracking-wide uppercase">
-            <li><a href="#" class="hover:text-white transition-colors">About Samai</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Samai Portfolio</a></li>
-            <li><a href="#" class="text-white">Samai Rum Map</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Where to Buy</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+    <header class="my-5 mx-4 xl:mx-70 rounded-2xl px-6 xl:px-10 py-3 xl:py-2 text-base font-semibold z-50 top-5 sticky sticky"
+        style="background-color:#b7936e; font-family:'Montserrat',sans-serif;">
+
+        <nav class="hidden sm:flex justify-between items-center">
+            <a href="https://www.samaidistillery.com/" class="link text-[#4a2e10] hover:text-white transition-colors duration-200">
+                About Samai
+            </a>
+            
+            <a href="/samai-rum-map" class="link text-[#4a2e10] hover:text-white transition-colors duration-200">
+                Samai Rum Map
+            </a>
+        </nav>
+
+        <div class="flex sm:hidden justify-between items-center">
+            <button id="burger" class="flex flex-col gap-1.5 bg-transparent border-0 cursor-pointer p-1" aria-label="Toggle menu">
+                <span class="block w-5 h-0.5 bg-[#4a2e10] rounded"></span>
+                <span class="block w-5 h-0.5 bg-[#4a2e10] rounded"></span>
+                <span class="block w-5 h-0.5 bg-[#4a2e10] rounded"></span>
+            </button>
+        </div>
+
+        <ul id="mobileMenu" class="sm:hidden hidden flex-col list-none mt-2 border-t border-white/20 pt-2 gap-2">
+            <li><a href="https://www.samaidistillery.com/" class="link block text-[#4a2e10] font-semibold py-1">About Samai</a></li>
+            <li><a href="/samai-rum-map" class="link block text-[#4a2e10] font-semibold py-1">Samai Rum Map</a></li>
         </ul>
-    </nav>
+    </header>
+    
 
     <!-- Map area -->
     <div class="relative w-full" style="min-height: 80vh;">
@@ -23,11 +41,10 @@
         <div class="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
             <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/bg-map.png"
                  alt="Cambodia Map"
-                 class="w-full h-full max-w-[95vw] max-h-[85vh] object-contain">
+                 class="h-[90vh] mt-2 object-contain">
         </div>
 
-        <!-- Logo + tagline, top right -->
-        <div class="absolute top-[6%] right-[4%] md:right-[6%] z-20 flex flex-col items-center text-center w-44 sm:w-56 md:w-64">
+        <div class="absolute top-[6%] right-[18%] md:right-[6%]z-20 flex flex-col items-center text-center w-40 sm:w-56 md:w-64">
             <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/samai-logo.png"
                  alt="Samai Logo"
                  class="w-full h-auto object-contain drop-shadow-xl">
@@ -45,22 +62,20 @@
         </div>
 
         <!-- Location markers -->
-        <!-- Siem Reap -->
-        <div class="absolute z-20 flex flex-col items-center" style="top: 28%; left: 30%;">
-            <span class="text-2xl sm:text-3xl md:text-4xl -mb-2" style="font-family: 'Tangerine', cursive;">Siem Reap</span>
-            <span class="block w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform"></span>
+        <div class="absolute z-20 flex flex-col items-center" style="top: 24%; left: 37%;">
+            <span class="text-2xl sm:text-3xl md:text-4xl" style="font-family: 'Tangerine', cursive;">Siem Reap</span>
+            <span class="block w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform"></span>
         </div>
 
         <!-- Battambang -->
-        <div class="absolute z-20 flex flex-col items-center" style="top: 38%; left: 16%;">
+        <div class="absolute z-20 flex flex-col items-center" style="top: 38%; left: 31%;">
             <span class="block w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform mb-1"></span>
             <span class="text-xl sm:text-2xl md:text-3xl" style="font-family: 'Tangerine', cursive;">Battambang</span>
         </div>
 
         <!-- Phnom Penh -->
-        <div class="absolute z-20 flex flex-col items-center" style="top: 55%; left: 47%;">
+        <div class="absolute z-20 flex flex-col items-center" style="top: 58%; left: 44%;">
             <span class="text-2xl sm:text-3xl md:text-4xl mb-1" style="font-family: 'Tangerine', cursive;">Phnom Penh</span>
-            <!-- distillery icon -->
             <div class="flex items-center gap-1">
                 <span class="w-6 h-8 sm:w-7 sm:h-9 rounded-full border-2 border-[#c2a06d]"></span>
                 <span class="w-6 h-10 sm:w-7 sm:h-12 rounded-full border-2 border-[#c2a06d]"></span>
@@ -70,32 +85,31 @@
         </div>
 
         <!-- Koh Rong -->
-        <div class="absolute z-20 flex flex-col items-center" style="top: 76%; left: 11%;">
-            <span class="text-xl sm:text-2xl md:text-3xl -mb-1" style="font-family: 'Tangerine', cursive;">Koh Rong</span>
+        <div class="absolute z-20 flex flex-col items-center" style="top: 86%; left: 30%;">
+            <span class="text-xl sm:text-2xl md:text-3xl " style="font-family: 'Tangerine', cursive;">Koh Rong</span>
             <span class="block w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform"></span>
         </div>
 
         <!-- Kampot -->
-        <div class="absolute z-20 flex flex-col items-center" style="top: 73%; left: 33%;">
+        <div class="absolute z-20 flex flex-col items-center" style="top: 97%; left: 41%;">
             <span class="text-xl sm:text-2xl md:text-3xl -mb-1" style="font-family: 'Tangerine', cursive;">Kampot</span>
             <span class="block w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform"></span>
         </div>
 
         <!-- Sihanoukville -->
-        <div class="absolute z-20 flex flex-col items-center" style="top: 88%; left: 18%;">
-            <span class="block w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform mb-1"></span>
+        <div class="absolute z-20 flex flex-col items-center" style="top: 99%; left: 34%;">
+            <span class="block w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform mb-2"></span>
             <span class="text-xl sm:text-2xl md:text-3xl" style="font-family: 'Tangerine', cursive;">Sihanoukville</span>
         </div>
-
-        <!-- Zoom control, bottom right -->
-        <div class="absolute z-20 bottom-[5%] right-[4%] md:right-[6%] flex flex-col items-center gap-2">
-            <button class="w-9 h-9 rounded-full bg-[#c2a06d] flex items-center justify-center text-[#2e2d35] text-lg shadow-md hover:bg-[#d1af7e] transition-colors">↕</button>
-            <div class="flex flex-col items-center bg-[#c2a06d] rounded-full px-1 py-2 shadow-md">
-                <button class="w-7 h-7 flex items-center justify-center text-[#2e2d35] text-xl font-bold hover:scale-110 transition-transform">+</button>
-                <span class="w-5 h-px bg-[#2e2d35]/40 my-2"></span>
-                <button class="w-7 h-7 flex items-center justify-center text-[#2e2d35] text-xl font-bold hover:scale-110 transition-transform">−</button>
-            </div>
-        </div>
-
     </div>
 </section>
+
+<script>
+  $('#burger').click(function() {
+    $('#mobileMenu').toggleClass('hidden').toggleClass('flex');
+  });
+  $('.link').click(function() {
+    $('.link').css('color', '');
+    $(this).css('color', 'white');
+  });
+</script>
