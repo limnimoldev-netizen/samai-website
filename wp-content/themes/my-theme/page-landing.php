@@ -12,10 +12,16 @@
         white-space: nowrap;
     }
 
-    /* This must match the real width/height ratio of bg-map.png.
-       Example: if the image is 1200x1600px, use 3/4. Adjust as needed. */
     .map-frame {
         aspect-ratio: 3 / 4;
+    }
+
+    .leaflet-control-container {
+        display: none !important;
+    }
+
+    .leaflet-container {
+        background: #f3f1ec;
     }
 </style>
 
@@ -48,12 +54,6 @@
         </ul>
     </header>
 
-    <!-- 
-        SHARED FRAME: image + all markers now live inside this one box.
-        It's centered exactly like before, still capped at 95vw / 80vh,
-        but now also holds a fixed aspect-ratio so percentage positions
-        stay locked to the image at every screen size.
-    -->
     <div class="absolute inset-0 w-full h-full z-0 flex items-center justify-center overflow-hidden p-4">
         <div class="map-frame relative w-full h-full max-w-[95vw] max-h-[80vh]">
 
@@ -82,12 +82,12 @@
             <!-- Siem Reap -->
             <div class="absolute z-20 flex flex-col items-center" style="top: 24%; left: 36%;">
                 <span class="province-label text-lg sm:text-xl md:text-2xl lg:text-[28px]">Siem Reap</span>
-                <span class="block w-4 h-4 sm:w-5 sm:h-5 md:w-7 md:h-7 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform"></span>
+                <span class="map-dot block w-4 h-4 sm:w-5 sm:h-5 md:w-7 md:h-7 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform" data-province="siem-reap"></span>
             </div>
 
             <!-- Battambang -->
             <div class="absolute z-20 flex flex-col items-center" style="top: 33%; left: 28%;">
-                <span class="block w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform mb-1"></span>
+                <span class="map-dot block w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform mb-1" data-province="battambang"></span>
                 <span class="province-label text-base sm:text-lg md:text-2xl lg:text-3xl">Battambang</span>
             </div>
 
@@ -105,18 +105,18 @@
             <!-- Koh Rong -->
             <div class="absolute z-20 flex flex-col items-center" style="top: 83%; left: 29%;">
                 <span class="province-label text-base sm:text-lg md:text-2xl lg:text-3xl">Koh Rong</span>
-                <span class="block w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform"></span>
+                <span class="map-dot block w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform" data-province="koh-rong"></span>
             </div>
 
             <!-- Kampot -->
             <div class="absolute z-20 flex flex-col items-center" style="top: 93%; left: 43%;">
                 <span class="province-label text-base sm:text-lg md:text-2xl lg:text-3xl">Kampot</span>
-                <span class="block w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform"></span>
+                <span class="map-dot block w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform" data-province="kampot"></span>
             </div>
 
             <!-- Sihanoukville -->
             <div class="absolute z-20 flex flex-col items-center" style="top: 100%; left: 31%;">
-                <span class="block w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform mb-1"></span>
+                <span class="map-dot block w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/40 cursor-pointer hover:scale-110 transition-transform mb-1" data-province="sihanoukville"></span>
                 <span class="province-label text-base sm:text-lg md:text-2xl lg:text-3xl">Sihanoukville</span>
             </div>
 
@@ -125,9 +125,58 @@
 
 </section>
 
+<!-- MAP MODAL -->
+<div id="mapModal"
+     class="hidden fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center">
+
+    <div class="relative w-[1280px] h-[90%] bg-white rounded-2xl overflow-hidden shadow-2xl">
+
+        <button id="closeMap"
+                class="absolute top-4 right-4 z-50 bg-white rounded-full px-4 py-2 font-bold">
+            ✕
+        </button>
+
+        <iframe
+            src="/interactive-map/"
+            class="w-full h-full border-0">
+        </iframe>
+
+    </div>
+
+</div>
+
 <script>
-    document.getElementById('burger').addEventListener('click', function () {
-        document.getElementById('mobileMenu').classList.toggle('hidden');
-        document.getElementById('mobileMenu').classList.toggle('flex');
+    const modal = document.getElementById("mapModal");
+    const closeBtn = document.getElementById("closeMap");
+    const iframe = document.querySelector("iframe");
+
+    document.querySelectorAll(".map-dot").forEach(dot => {
+        dot.addEventListener("click", function () {
+
+            const province = this.dataset.province;
+
+            // reset first (prevents caching issues)
+            iframe.src = "";
+
+            setTimeout(() => {
+                iframe.src = "/interactive-map/?province=" + province;
+            }, 50);
+
+            modal.classList.remove("hidden");
+        });
+    });
+
+    // close modal
+    closeBtn.addEventListener("click", function () {
+        modal.classList.add("hidden");
+        iframe.src = "";
+    });
+
+    // click outside modal
+    modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+            modal.classList.add("hidden");
+            iframe.src = "";
+        }
     });
 </script>
