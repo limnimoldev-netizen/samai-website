@@ -9,9 +9,9 @@
 
  <section class="p-8 rounded-xl bg-[#FAF9F6] w-150 sm:w-100 md:w-100 border border-gray-300 ">
     <a href="" class="text-[#b7936e] flex justify-end md:text-lg text-2xl underline decoration-[#b7936e]">Close</a>
-    <h1  class="text-4xl md:text-2xl md:p-2  p-2 font-bold text-[#b7936e]">Samai Cocktail Bar</h1>
+    <h1  class="text-4xl md:text-3xl md:py-2  py-2 font-bold text-[#b7936e]">Samai Cocktail Bar</h1>
      <div class="relative  ">
-        <button id="prev" class="absolute left-[-24px] md:left-[-25px] top-1/2 -translate-y-1/2 z-10  px-3 py-2 rounded">
+        <button id="prev" class="absolute left-[-35px] md:left-[-35px] top-1/2 -translate-y-1/2 z-10  px-3 py-2 rounded">
             
             <i class="fa-solid fa-angle-left text-[#b7936e] text-2xl "></i>
         </button>
@@ -24,12 +24,12 @@
 
             </div>
 
-        <button id="next" class="absolute right-[-24px] md:right-[-25px] top-1/2 -translate-y-1/2 z-10  px-3 py-2 rounded">
+        <button id="next" class="absolute right-[-35px] md:right-[-35px] top-1/2 -translate-y-1/2 z-10  px-3 py-2 rounded">
             <i class="fa-solid fa-angle-right text-[#b7936e] text-2xl  "></i>
         </button>
     </div>
     <div class="w-125 pb-5 md:w-90">
-            <h3 class="text-[#b7936e] font-bold text-2xl md:p-2 p-2  md:text-xl">SAMAI DISTILLERY RUM BAR</h3>
+            <h3 class="text-[#b7936e] font-bold text-2xl md:py-1 py-1  md:text-2xl">SAMAI DISTILLERY RUM BAR</h3>
         <p class="font-bold text-2xl font-lg  ">     Phnom Penh </p>
         <p class="text-xl">Samai Bar is located at the firs rum distillery in
             Cambodia. Open to public on Thursday &
