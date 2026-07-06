@@ -98,22 +98,34 @@
 </head>
 <body class="bg-[#3f3c47] min-h-screen text-gray-100 flex flex-col items-center justify-start antialiased">
 
-        <!-- put nav -->
+    <header class="my-5 mx-4 xl:mx-70 rounded-3xl px-6 xl:px-8 py-3 xl:py-2 text-base font-semibold z-50 top-5 sticky w-full max-w-5xl"
+            style="background-color:#b7936e; font-family:'Montserrat',sans-serif;">
+        <nav class="hidden sm:flex justify-between items-center">
+            <a href="https://www.samaidistillery.com/" class="link text-[#4a2e10] hover:text-white transition-colors duration-200">About Samai</a>
+            <a href="/samai-rum-map" class="link text-[#4a2e10] hover:text-white transition-colors duration-200">Samai Rum Map</a>
+        </nav>
+        <div class="flex sm:hidden justify-between items-center">
+            <button id="burger" class="flex flex-col gap-1.5 bg-transparent border-0 cursor-pointer p-1" aria-label="Toggle menu">
+                <span class="block w-5 h-0.5 bg-[#4a2e10] rounded"></span>
+                <span class="block w-5 h-0.5 bg-[#4a2e10] rounded"></span>
+                <span class="block w-5 h-0.5 bg-[#4a2e10] rounded"></span>
+            </button>
+        </div>
+        <ul id="mobileMenu" class="sm:hidden hidden flex-col list-none mt-2 border-t border-[#4a2e10]/20 pt-2 gap-2">
+            <li><a href="https://www.samaidistillery.com/" class="link block text-[#4a2e10] font-semibold py-1">About Samai</a></li>
+            <li><a href="/samai-rum-map" class="link block text-[#4a2e10] font-semibold py-1">Samai Rum Map</a></li>
+        </ul>
+    </header>
 
-    <div class="w-full max-w-5xl px-4 py-8 flex flex-col items-center justify-center relative min-h-[600px]">
-        
+    <section id="map-section" class="w-full max-w-5xl px-4 py-8 flex flex-col items-center justify-center relative min-h-[600px]">
         <div class="absolute inset-0 w-full h-full z-0 pointer-events-none flex items-center justify-center overflow-hidden p-4">
-            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/bg-map.png" 
-                alt="Cambodia Background Map" 
-                class="w-full h-full max-w-[105vw] sm:max-w-[90vw] max-h-[75vh] md:max-h-[85vh] object-contain opacity-20 mix-blend-screen transform scale-110 md:scale-115 transition-all duration-300">
+            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/bg-map.png" alt="Cambodia Background Map" class="w-full h-full max-w-[105vw] sm:max-w-[90vw] max-h-[75vh] md:max-h-[85vh] object-contain opacity-20 mix-blend-screen transition-all duration-300">
         </div>
 
-        <!-- Inset Light Clean Map Grid Window Frame (Exactly matching image_b684b8.jpg) -->
         <div class="w-full max-w-[860px] aspect-[3/2] rounded-xl shadow-2xl border border-white/10 overflow-hidden relative z-10 bg-[#e5e3df]">
             <div id="samai-leaflet-map" class="w-full h-full"></div>
         </div>
-        
-    </div>
+    </section>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
