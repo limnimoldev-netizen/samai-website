@@ -94,12 +94,9 @@
             <!-- Phnom Penh -->
             <div class="absolute z-20 flex flex-col items-center" style="top: 55%; left: 44%;">
                 <span class="province-label text-lg sm:text-xl md:text-3xl lg:text-4xl mb-1">Phnom Penh</span>
-                <div class="flex items-center gap-1">
-                    <span class="w-4 h-6 sm:w-5 sm:h-7 md:w-6 md:h-8 lg:w-7 lg:h-9 rounded-full border-2 border-[#c2a06d]"></span>
-                    <span class="w-4 h-8 sm:w-5 sm:h-9 md:w-6 md:h-10 lg:w-7 lg:h-12 rounded-full border-2 border-[#c2a06d]"></span>
-                    <span class="w-4 h-6 sm:w-5 sm:h-7 md:w-6 md:h-8 lg:w-7 lg:h-9 rounded-full border-2 border-[#c2a06d]"></span>
-                </div>
-                <span class="mt-1 text-[#c2a06d] text-sm sm:text-base md:text-lg">💧</span>
+                <span class="map-dot w-32 h-32 cursor-pointer hover:scale-110 transition-transform" data-province="phnom-penh">
+                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/phnom-penh-icon.png" alt="Phnom Penh">
+                </span>
             </div>
 
             <!-- Koh Rong -->
@@ -137,46 +134,54 @@
         </button>
 
         <iframe
-            src="/interactive-map/"
+            src=""
             class="w-full h-full border-0">
         </iframe>
 
     </div>
-
 </div>
 
 <script>
     const modal = document.getElementById("mapModal");
     const closeBtn = document.getElementById("closeMap");
-    const iframe = document.querySelector("iframe");
+    const iframe = modal.querySelector("iframe");
+
+    function closeMapModal() {
+        modal.classList.add("hidden");
+        iframe.src = "";
+    }
 
     document.querySelectorAll(".map-dot").forEach(dot => {
         dot.addEventListener("click", function () {
-
             const province = this.dataset.province;
 
-            // reset first (prevents caching issues)
-            iframe.src = "";
-
-            setTimeout(() => {
-                iframe.src = "/interactive-map/?province=" + province;
-            }, 50);
+            iframe.removeAttribute("src");
+            requestAnimationFrame(() => {
+                iframe.src = "/interactive-map/?province=" + encodeURIComponent(province) + "&_=" + Date.now();
+            });
 
             modal.classList.remove("hidden");
         });
     });
 
-    // close modal
-    closeBtn.addEventListener("click", function () {
-        modal.classList.add("hidden");
-        iframe.src = "";
+    closeBtn.addEventListener("click", closeMapModal);
+
+    modal.addEventListener("click", function (e) {
+        if (e.target === modal) closeMapModal();
     });
 
-    // click outside modal
-    modal.addEventListener("click", function (e) {
-        if (e.target === modal) {
-            modal.classList.add("hidden");
-            iframe.src = "";
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+            closeMapModal();
         }
     });
+
+    // Mobile burger menu
+    const burger = document.getElementById("burger");
+    const mobileMenu = document.getElementById("mobileMenu");
+    if (burger && mobileMenu) {
+        burger.addEventListener("click", function () {
+            mobileMenu.classList.toggle("hidden");
+        });
+    }
 </script>
