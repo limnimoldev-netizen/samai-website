@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 /**
  * Samai Distillery - Interactive Province Map
  * Reads pins from the `map_location` custom post type.
@@ -200,4 +200,4 @@ if ($province) {
 </script>
 
 </body>
-</html>
+</html> -->
