@@ -4,6 +4,15 @@
  * Reads pins from the `map_location` custom post type.
  */
 
+// This code will catch that and show the detail card instead of the map.
+if (isset($_GET['venue_id'])) {
+    $venue_id = intval($_GET['venue_id']);
+    include(get_template_directory() . '/template-parts/detail-card.php');
+    exit; // Stop the map from loading, just show the card!
+}
+// ... rest of your existing PHP code starts here
+
+
 $province = isset($_GET['province']) ? sanitize_text_field($_GET['province']) : '';
 
 // Default view: full Cambodia overview
@@ -30,8 +39,8 @@ if ($province) {
             continue; // skip incomplete entries
         }
 
-        $markers[] = [$location->post_title, (float) $lat, (float) $lng];
-
+        $markers[] = [$location->post_title, (float) $lat, (float) $lng, $location->ID];
+        
         if ($is_center === '1') {
             $center = [(float) $lat, (float) $lng];
             $zoom   = (int) get_post_meta($location->ID, '_zoom', true) ?: 10;
@@ -181,12 +190,16 @@ if ($province) {
       popupAnchor: [0, -18]
     });
 
-    const bounds = markers.map(([label, lat, lng]) => {
-      L.marker([lat, lng], { icon: brownPin })
-        .addTo(map)
-        .bindPopup(`<b>${label}</b>`);
-      return [lat, lng];
-    });
+    const bounds = markers.map(([label, lat, lng, id]) => {
+    L.marker([lat, lng], { icon: brownPin })
+      .addTo(map)
+      .on('click', function() {
+        // 1. Tell the browser to load the card for this ID
+        // We will use the 'venue_id' in the URL to tell WordPress which card to show
+        window.location.href = '/venue-detail-card/?venue_id=' + id;
+      });
+    return [lat, lng];
+  });
 
     if (bounds.length > 1) {
       map.fitBounds(bounds, { padding: [70, 70] });
