@@ -133,10 +133,14 @@
             ✕
         </button>
 
-        <iframe
-            src=""
-            class="w-full h-full border-0">
-        </iframe>
+        <iframe id="mapFrame" src="" class="w-full h-full border-0"></iframe>
+        
+        <!-- The Overlay Card (Positioned absolute) -->
+        <div id="detailContainer" class="absolute top-4 right-4 w-96 h-[calc(100%-2rem)] bg-white shadow-xl translate-x-full transition-transform duration-500 overflow-y-auto z-50">
+            <div id="cardContent" class="p-6">
+                <!-- Data loads here -->
+            </div>
+        </div>
 
     </div>
 </div>
@@ -145,25 +149,44 @@
     const modal = document.getElementById("mapModal");
     const closeBtn = document.getElementById("closeMap");
     const iframe = modal.querySelector("iframe");
+    const detailContainer = document.getElementById("detailContainer"); // The overlay div
+    const cardContent = document.getElementById("cardContent");
 
+    // 1. Open Modal when a Province is clicked
     function closeMapModal() {
         modal.classList.add("hidden");
+        detailContainer.classList.add('translate-x-full'); // Slide away
         iframe.src = "";
     }
 
     document.querySelectorAll(".map-dot").forEach(dot => {
         dot.addEventListener("click", function () {
             const province = this.dataset.province;
-
-            iframe.removeAttribute("src");
-            requestAnimationFrame(() => {
-                iframe.src = "/interactive-map/?province=" + encodeURIComponent(province) + "&_=" + Date.now();
-            });
-
+            iframe.src = "/interactive-map/?province=" + encodeURIComponent(province) + "&_=" + Date.now();
             modal.classList.remove("hidden");
         });
     });
 
+    // 2. Listen for 'show_card' from the iframe (the map)
+    window.addEventListener('message', function(event) {
+        if (event.data.type === 'show_card') {
+            // Slide the overlay card in
+            detailContainer.classList.remove('translate-x-full');
+            
+            cardContent.innerHTML = '<p class="p-8">Loading...</p>';
+            fetch('/interactive-map/?venue_id=' + event.data.venue_id)
+                .then(response => response.text())
+                .then(html => {
+                    cardContent.innerHTML = html;
+                });
+        }
+        // Handle "close" link inside the card
+        if (event.data.type === 'close_card') {
+            detailContainer.classList.add('translate-x-full');
+        }
+    });
+
+    // 3. Existing UI helpers
     closeBtn.addEventListener("click", closeMapModal);
 
     modal.addEventListener("click", function (e) {
@@ -176,7 +199,6 @@
         }
     });
 
-    // Mobile burger menu
     const burger = document.getElementById("burger");
     const mobileMenu = document.getElementById("mobileMenu");
     if (burger && mobileMenu) {

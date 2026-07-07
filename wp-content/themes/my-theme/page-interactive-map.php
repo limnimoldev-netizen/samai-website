@@ -1,16 +1,11 @@
 <?php
-/**
- * Samai Distillery - Interactive Province Map
- * Reads pins from the `map_location` custom post type.
- */
-
-// This code will catch that and show the detail card instead of the map.
+// This intercepts the AJAX fetch request sent by the modal
 if (isset($_GET['venue_id'])) {
     $venue_id = intval($_GET['venue_id']);
+    // This loads the specific card template
     include(get_template_directory() . '/template-parts/detail-card.php');
-    exit; // Stop the map from loading, just show the card!
+    exit; 
 }
-// ... rest of your existing PHP code starts here
 
 
 $province = isset($_GET['province']) ? sanitize_text_field($_GET['province']) : '';
@@ -194,9 +189,9 @@ if ($province) {
     L.marker([lat, lng], { icon: brownPin })
       .addTo(map)
       .on('click', function() {
-        // 1. Tell the browser to load the card for this ID
-        // We will use the 'venue_id' in the URL to tell WordPress which card to show
-        window.location.href = '/venue-detail-card/?venue_id=' + id;
+        // This sends the message to the parent page (landing page)
+        // so it can update the right-hand panel without reloading the map
+        window.parent.postMessage({ type: 'show_card', venue_id: id }, '*');
       });
     return [lat, lng];
   });
