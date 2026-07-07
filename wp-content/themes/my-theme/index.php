@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+
+
+<?php get_template_part('template-parts/venue-detail-cart'); ?>
+
+<main>
+    <!-- your page content here -->                                                                                                                                                                                                 
+</main>
+
 [7/6/26 2:00 PM] Lim Nimol: <?php
 /**
  * Template Name: Interactive Map Template
@@ -146,3 +155,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+>>>>>>> a0dda426279e70a8295715553a3cd071a47679be

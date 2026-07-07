@@ -1,4 +1,4 @@
-<!-- <?php
+<?php
 /**
  * Samai Distillery - Interactive Province Map
  * Reads pins from the `map_location` custom post type.
@@ -39,6 +39,8 @@ if ($province) {
     }
 }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,7 +97,6 @@ if ($province) {
     height: 100%;
   }
 
-  /* Popup styling */
   .leaflet-popup-content-wrapper {
     background: var(--brand-brown) !important;
     color: #fff !important;
@@ -114,7 +115,6 @@ if ($province) {
     text-align: center;
   }
 
-  /* Zoom control styling */
   .leaflet-bar {
     border: none !important;
     border-radius: 18px !important;
@@ -132,7 +132,6 @@ if ($province) {
     background: var(--brand-brown-hover) !important;
   }
 
-  /* Marker pin */
   .pin-marker {
     width: 34px;
     height: 34px;
@@ -168,9 +167,9 @@ if ($province) {
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-      maxZoom: 20
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      subdomains: ['a', 'b', 'c'],
+      maxZoom: 19
     }).addTo(map);
 
     const brownPin = L.divIcon({
@@ -184,7 +183,9 @@ if ($province) {
     const bounds = markers.map(([label, lat, lng]) => {
       L.marker([lat, lng], { icon: brownPin })
         .addTo(map)
-        .bindPopup(`<b>${label}</b>`);
+        .bindPopup(`
+         //PLACE FOR POPUP CART
+        `);
       return [lat, lng];
     });
 
@@ -200,4 +201,4 @@ if ($province) {
 </script>
 
 </body>
-</html> -->
+</html>
