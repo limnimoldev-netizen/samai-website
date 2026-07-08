@@ -40,7 +40,7 @@ function samai_map_location_metabox() {
         'normal',
         'high'
     );
-}
+}   
 add_action('add_meta_boxes', 'samai_map_location_metabox');
 
 // 3. Render the meta box fields
@@ -149,3 +149,44 @@ function samai_map_location_columns_content($column, $post_id) {
     }
 }
 add_action('manage_map_location_posts_custom_column', 'samai_map_location_columns_content', 10, 2);
+// 6. Add a SECOND Meta Box for Venue Details
+function samai_venue_details_metabox() {
+    add_meta_box(
+        'venue_profile_details',
+        'Venue Profile Information',
+        'samai_venue_details_metabox_html',
+        'map_location',
+        'normal',
+        'default'
+    );
+}
+add_action('add_meta_boxes', 'samai_venue_details_metabox');
+
+function samai_venue_details_metabox_html($post) {
+    // Fetch values
+    $address = get_post_meta($post->ID, '_venue_address', true);
+    $drinks  = get_post_meta($post->ID, '_venue_drinks', true);
+    $social  = get_post_meta($post->ID, '_venue_social', true);
+    ?>
+    <div class="samai-field">
+        <label>Address</label>
+        <input type="text" name="venue_address" value="<?php echo esc_attr($address); ?>" style="width:100%">
+    </div>
+    <div class="samai-field">
+        <label>Recommended Drinks</label>
+        <textarea name="venue_drinks" style="width:100%; height:80px;"><?php echo esc_textarea($drinks); ?></textarea>
+    </div>
+    <div class="samai-field">
+        <label>Social Media Links</label>
+        <textarea name="venue_social" style="width:100%; height:80px;"><?php echo esc_textarea($social); ?></textarea>
+    </div>
+    <?php
+}
+
+// 7. Save the new fields
+function samai_save_venue_details($post_id) {
+    if (isset($_POST['venue_address'])) update_post_meta($post_id, '_venue_address', sanitize_text_field($_POST['venue_address']));
+    if (isset($_POST['venue_drinks']))  update_post_meta($post_id, '_venue_drinks', sanitize_textarea_field($_POST['venue_drinks']));
+    if (isset($_POST['venue_social']))  update_post_meta($post_id, '_venue_social', sanitize_textarea_field($_POST['venue_social']));
+}
+add_action('save_post_map_location', 'samai_save_venue_details');

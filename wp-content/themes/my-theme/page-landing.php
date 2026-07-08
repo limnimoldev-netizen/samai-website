@@ -32,39 +32,26 @@
         background: #f3f1ec;
     }
 
-    @media (max-width: 768px) {
-        .map-frame {
-            aspect-ratio: 3 / 4;
-            margin-top: -40px;
-        }
 
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .samai-infor {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            pointer-events: none;
-        }
-
+    #detailContainer {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 384px; /* w-96 */
+        height: calc(100% - 2rem);
+        background: white;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        z-index: 50;
+        transition: transform 0.5s ease-in-out;
+        /* ADD THIS LINE */
+        pointer-events: none; 
     }
 
-    @keyframes pinPulse {
-        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(194, 160, 109, 0.7); }
-        70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(194, 160, 109, 0); }
-        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(194, 160, 109, 0); }
+    /* When the card is active, re-enable pointer events */
+    #detailContainer:not(.translate-x-full) {
+        pointer-events: auto;
     }
-    .map-dot-pulse {
-        animation: pinPulse 2s infinite ease-in-out;
-    }
+
 </style>
 
 <section class="min-h-screen w-full bg-[#3a3942] text-white relative flex flex-col overflow-x-hidden select-none" style="font-family: 'Montserrat', sans-serif;">
@@ -165,7 +152,15 @@
         <button id="closeMap" class="absolute top-4 right-4 z-50 bg-white/90 hover:bg-white text-black rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-md transition-colors duration-200" aria-label="Close modal">
             ✕
         </button>
-        <iframe src="" class="w-full h-full border-0"></iframe>
+
+        <iframe id="mapFrame" src="" class="w-full h-full border-0"></iframe>
+        
+        <div id="detailContainer" 
+            class="hidden absolute top-4 right-4 w-96 h-[calc(100%-2rem)] bg-white shadow-xl transition-transform duration-500 overflow-y-auto z-50 translate-x-full">
+            <div id="cardContent" class="p-6">
+                </div>
+        </div>
+
     </div>
 </div>
 
@@ -174,42 +169,59 @@
     const modalContainer = document.getElementById("modalContainer");
     const closeBtn = document.getElementById("closeMap");
     const iframe = modal.querySelector("iframe");
+    const detailContainer = document.getElementById("detailContainer");
+    const cardContent = document.getElementById("cardContent");
 
-    function openMapModal(province) {
-        iframe.removeAttribute("src");
-        modal.classList.remove("hidden");
-        
-        // Dynamic smooth fade-in initialization
-        setTimeout(() => {
-            modalContainer.classList.remove("scale-95", "opacity-0");
-            modalContainer.classList.add("scale-100", "opacity-100");
-        }, 10);
-
-        requestAnimationFrame(() => {
-            iframe.src = "/interactive-map/?province=" + encodeURIComponent(province) + "&_=" + Date.now();
-        });
-    }
-
+    // 1. Function to Close the Modal Entirely
     function closeMapModal() {
-        modalContainer.classList.remove("scale-100", "opacity-100");
-        modalContainer.classList.add("scale-95", "opacity-0");
-        setTimeout(() => {
-            modal.classList.add("hidden");
-            iframe.src = "";
-        }, 250);
+        modal.classList.add("hidden");
+        // Reset sidebar so it's hidden next time
+        detailContainer.classList.add('translate-x-full');
+        detailContainer.classList.add('hidden');
+        iframe.src = "";
     }
 
+    // 2. Close Button Event Listener
+    if (closeBtn) {
+        closeBtn.addEventListener("click", closeMapModal);
+    }
+
+    // 3. Open Modal when a Province is clicked
     document.querySelectorAll(".map-dot").forEach(dot => {
         dot.addEventListener("click", function () {
-            openMapModal(this.dataset.province);
+            const province = this.dataset.province;
+            iframe.src = "/interactive-map/?province=" + encodeURIComponent(province) + "&_=" + Date.now();
+            modal.classList.remove("hidden");
         });
     });
 
-    closeBtn.addEventListener("click", closeMapModal);
-    modal.addEventListener("click", (e) => { if (e.target === modal) closeMapModal(); });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.classList.contains("hidden")) closeMapModal(); });
+    // 4. Single Message Listener for Sidebar (Show/Close)
+    window.addEventListener('message', function(event) {
+        // Handle Showing the Card
+        if (event.data.type === 'show_card') {
+            detailContainer.classList.remove('hidden');
+            setTimeout(() => {
+                detailContainer.classList.remove('translate-x-full');
+            }, 10);
+            
+            cardContent.innerHTML = '<p class="p-8">Loading...</p>';
+            fetch('/interactive-map/?venue_id=' + event.data.venue_id)
+                .then(response => response.text())
+                .then(html => {
+                    cardContent.innerHTML = html;
+                });
+        }
 
-    // Mobile Navigation Burger Actions
+        // Handle Closing the Card
+        if (event.data.type === 'close_card') {
+            detailContainer.classList.add('translate-x-full');
+            setTimeout(() => {
+                detailContainer.classList.add('hidden');
+            }, 500);
+        }
+    });
+
+    // 5. Mobile Menu Toggle
     const burger = document.getElementById("burger");
     const mobileMenu = document.getElementById("mobileMenu");
     if (burger && mobileMenu) {
