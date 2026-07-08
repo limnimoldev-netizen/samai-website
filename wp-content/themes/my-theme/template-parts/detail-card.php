@@ -4,47 +4,44 @@ if (!$venue_id) return;
 
 // Fetch meta data
 $address = get_post_meta($venue_id, '_venue_address', true);
-$drinks  = get_post_meta($venue_id, '_venue_drinks', true);
-$social  = get_post_meta($venue_id, '_venue_social', true);
-$thumb   = get_the_post_thumbnail_url($venue_id, 'large');
+$drinks = get_post_meta($venue_id, '_venue_drinks', true);
+$social = get_post_meta($venue_id, '_venue_social', true); // Assuming these exist
 ?>
 
-<div class="relative p-6 md:p-8 bg-white h-full overflow-y-auto">
-    <!-- Close Link -->
-    <div class="flex justify-end ">
-        <a href="#" 
-           onclick="window.parent.postMessage({type: 'close_card'}, '*')" 
-           class="text-[#b7936e] underline text-xl hover:text-[#836342] transition">
-           close
-        </a>
+<div class="relative p-6 bg-white h-full overflow-y-auto font-sans text-gray-800">
+    <div class="flex justify-end mb-4">
+        <a href="#" onclick="window.parent.postMessage({type: 'close_card'}, '*')" 
+           class="text-[#b7936e] underline text-sm uppercase font-bold">close</a>
     </div>
 
-    <!-- Title -->
-    <h1 class="text-3xl font-bold text-[#b7936e] mb-6 leading-tight"><?php echo get_the_title($venue_id); ?></h1>
+    <h1 class="text-3xl font-bold text-[#b7936e] mb-4"><?php echo get_the_title($venue_id); ?></h1>
 
-    <!-- Main Image -->
-    <?php if ($thumb): ?>
-        <img src="<?php echo esc_url($thumb); ?>" class="w-full h-64 object-cover rounded-xl mb-6 shadow-md">
-    <?php endif; ?>
+    <div class="mb-6">
+        <?php echo get_the_post_thumbnail($venue_id, 'large', ['class' => 'w-full rounded-lg']); ?>
+    </div>
 
-    <!-- Description -->
-    <div class="text-gray-600 mb-8 text-sm leading-relaxed">
+    <div class="text-sm leading-relaxed mb-6">
         <?php echo apply_filters('the_content', get_post_field('post_content', $venue_id)); ?>
     </div>
 
-    <!-- Details Section -->
-    <div class="space-y-4 text-sm text-gray-800">
-        <?php if(!empty($address)): ?>
-            <p><strong class="text-[#b7936e]">Address:</strong><br><?php echo esc_html($address); ?></p>
-        <?php endif; ?>
+    <div class="space-y-4 text-sm">
+        <p><strong><?php echo esc_html(get_post_meta($venue_id, '_venue_subtitle', true)); ?></strong></p>
+        <p class="font-bold"><?php echo esc_html($address); ?></p>
         
-        <?php if(!empty($drinks)): ?>
-            <p><strong class="text-[#b7936e]">Samai Signature Serves:</strong><br><?php echo esc_html($drinks); ?></p>
-        <?php endif; ?>
-        
-        <?php if(!empty($social)): ?>
-            <div class="text-[#b7936e] font-bold">Follow Us:</div>
-            <div class="text-gray-600"><?php echo apply_filters('the_content', $social); ?></div>
-        <?php endif; ?>
+        <div>
+            <h3 class="font-bold text-[#b7936e]">Samai Signature Serves:</h3>
+            <p><?php echo esc_html($drinks); ?></p>
+        </div>
+
+        <div>
+            <h3 class="font-bold text-[#b7936e]">Contact:</h3>
+            <p><?php echo esc_html(get_post_meta($venue_id, '_venue_email', true)); ?><br>
+               WhatsApp/Telegram: <?php echo esc_html(get_post_meta($venue_id, '_venue_phone', true)); ?></p>
+        </div>
+
+        <div>
+            <h3 class="font-bold text-[#b7936e]">Follow Us:</h3>
+            <p>Instagram: <a href="#" class="text-blue-600">@SamaiDistillery</a></p>
+            </div>
     </div>
 </div>
