@@ -5,15 +5,21 @@
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
 <style>
+    @font-face {
+        font-family: 'Amsterdam Four';
+        src: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/fonts/Amsterdam%20Four_ttf%20400.ttf') format('truetype');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
     .province-label {
-        font-family: 'Mr Dafoe', cursive;
-        font-weight: 300;
+        font-family: 'Amsterdam Four', cursive;
+        font-weight: 400;
         line-height: 1;
         white-space: nowrap;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        text-shadow: 0 2px 4px rgba(0,0,0,.6);
+        letter-spacing: 1px;
     }
-
-    /* Essential for matching pin positions to the image layer across all viewport aspect ratios */
     .map-frame {
         aspect-ratio: 3 / 4;
     }
@@ -46,6 +52,7 @@
             transform: translateX(-50%);
             width: 90%;
             max-width: 400px;
+            pointer-events: none;
         }
 
     }
@@ -62,7 +69,7 @@
 
 <section class="min-h-screen w-full bg-[#3a3942] text-white relative flex flex-col overflow-x-hidden select-none" style="font-family: 'Montserrat', sans-serif;">
 
-    <header class="my-5 mx-4 md:mx-12 lg:mx-32 xl:mx-64 rounded-2xl px-6 py-3 text-base font-semibold z-50 sticky top-5 shadow-lg backdrop-blur-md bg-[#b7936e]"
+    <header class="my-5 mx-4 md:mx-12 lg:mx-32 xl:mx-64 rounded-3xl px-6 py-3 text-base font-semibold z-50 sticky top-5 shadow-lg backdrop-blur-md bg-[#b7936e]"
             style="font-family:'Montserrat',sans-serif;">
 
         <nav class="hidden sm:flex justify-between items-center">
@@ -85,7 +92,7 @@
 
         <ul id="mobileMenu" class="sm:hidden hidden flex-col list-none mt-2 border-t border-[#4a2e10]/20 pt-2 gap-2">
             <li><a href="https://www.samaidistillery.com/" target="_blank" class="link block text-[#4a2e10] font-semibold py-1">About Samai</a></li>
-            <li><a href="/samai-rum-map" class="link block text-[#4a2e10] font-semibold py-1">Samai Rum Map</a></li>
+            <li><a href="/" class="link block text-[#4a2e10] font-semibold py-1">Samai Rum Map</a></li>
         </ul>
     </header>
 
@@ -115,36 +122,36 @@
                      alt="Cambodia Background Map"
                      class="absolute inset-0 w-full h-full object-contain opacity-20 mix-blend-screen pointer-events-none">
 
-                <div class="absolute top-[38%] left-[30%] sm:top-[33%] sm:left-[30%] z-20 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2">
-                    <span class="province-label text-base sm:text-xl md:text-2xl mb-0.5">Siem Reap</span>
+                <div class="absolute top-[37%] left-[30%] sm:top-[32%] sm:left-[30%] z-20 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2">
+                    <span class="province-label text-xs sm:text-xl md:text-2xl mb-6">Siem Reap</span>
                     <span class="map-dot map-dot-pulse block w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/60 cursor-pointer hover:scale-120 hover:bg-white transition-all duration-200" data-province="siem-reap"></span>
                 </div>
 
                 <div class="absolute top-[44%] left-[16%] sm:top-[44%] sm:left-[16%] z-20 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2" style="">
                     <span class="map-dot map-dot-pulse block w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/60 cursor-pointer hover:scale-120 hover:bg-white transition-all duration-200 mb-0.5" data-province="battambang"></span>
-                    <span class="province-label text-base sm:text-xl md:text-2xl">Battambang</span>
+                    <span class="province-label text-xs sm:text-xl md:text-2xl mt-4">Battambang</span>
                 </div>
 
                 <div class="absolute top-[60%] left-[49%] sm:top-[61%] sm:left-[49%] z-20 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2" style="">
-                    <span class="province-label text-lg sm:text-2xl md:text-3xl">Phnom Penh</span>
-                    <span class="map-dot block w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 cursor-pointer hover:scale-110 transition-transform duration-200 drop-shadow-lg" data-province="phnom-penh">
+                    <span class="province-label text-sm sm:text-2xl md:text-3xl mb-2">Phnom Penh</span>
+                    <span class="map-dot block w-14 h-14 sm:w-22 sm:h-22 md:w-26 md:h-26 lg:w-30 lg:h-30 cursor-pointer hover:scale-110 transition-transform duration-200 drop-shadow-lg" data-province="phnom-penh">
                         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/phnom-penh-icon.png" alt="Phnom Penh" class="w-full h-full object-contain">
                     </span>
                 </div>
 
-                <div class="absolute top-[73%] left-[15%] sm:top-[83%] sm:left-[15%] z-20 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2" style="">
-                    <span class="province-label text-base sm:text-xl md:text-2xl mb-0.5">Koh Rong</span>
+                <div class="absolute top-[72%] left-[15%] sm:top-[82%] sm:left-[15%] z-20 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2" style="">
+                    <span class="province-label text-xs sm:text-xl md:text-2xl mb-6">Koh Rong</span>
                     <span class="map-dot map-dot-pulse block w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/60 cursor-pointer hover:scale-120 hover:bg-white transition-all duration-200" data-province="koh-rong"></span>
                 </div>
 
                 <div class="absolute top-[80%] left-[38%] sm:top-[91%] sm:left-[38%] z-20 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2" style="">
-                    <span class="province-label text-base sm:text-xl md:text-2xl mb-2">Kampot</span>
+                    <span class="province-label text-xs sm:text-xl md:text-2xl mb-4">Kampot</span>
                     <span class="map-dot map-dot-pulse block w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/60 cursor-pointer hover:scale-120 hover:bg-white transition-all duration-200" data-province="kampot"></span>
                 </div>
 
                 <div class="absolute top-[83%] left-[24%] sm:top-[96%] sm:left-[24%] z-20 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2" style="">
                     <span class="map-dot map-dot-pulse block w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#c2a06d] border-2 border-white/60 cursor-pointer hover:scale-120 hover:bg-white transition-all duration-200 mb-0.5" data-province="sihanoukville"></span>
-                    <span class="province-label text-base sm:text-xl md:text-2xl">Sihanoukville</span>
+                    <span class="province-label text-xs sm:text-xl md:text-2xl mt-4 ">Sihanoukville</span>
                 </div>
 
             </div>
