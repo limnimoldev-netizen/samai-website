@@ -11,7 +11,7 @@ $email    = get_post_meta($venue_id, '_venue_email', true);
 $phone    = get_post_meta($venue_id, '_venue_phone', true);
 ?>
 
-<div class=" bg-white h-full overflow-y-auto text-[#333] font-sans">
+<div class=" bg-white h-full  text-[#333] font-sans">
     <div class="flex justify-end mb-1">
         <a href="#" onclick="window.parent.postMessage({type: 'close_card'}, '*')" 
            class="text-[#b7936e] text-2xl font-bold hover:text-[#836342] transition-colors">✕</a>
@@ -21,11 +21,16 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
 
         <div class="space-y-6 text-gray-800">
             
-            <div class="flex gap-2">
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 1.jpg" 
-                    class="w-2/3 h-48 object-cover rounded-lg" alt="Sora Bar View">
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 3.jpg" 
-                    class="w-1/3 h-48 object-cover rounded-lg" alt="Cocktail Detail">
+            <div class="relative group mb-6">
+                <button id="prevBtn" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md z-10 text-[#b7936e] hover:bg-white transition-all">❮</button>
+
+                <div id="slider" class="flex overflow-x-auto gap-4 snap-x snap-mandatory scroll-smooth scrollbar-hide">
+                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 1.jpg" class="snap-center min-w-full h-64 object-cover rounded-xl" alt="View 1">
+                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 2.webp" class="snap-center min-w-full h-64 object-cover rounded-xl" alt="View 2">
+                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 3.jpg" class="snap-center min-w-full h-64 object-cover rounded-xl" alt="View 3">
+                </div>
+
+                <button id="nextBtn" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md z-10 text-[#b7936e] hover:bg-white transition-all">❯</button>
             </div>
 
             <div>
@@ -57,3 +62,12 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
 </div>
 
 
+<script>
+    const slider = document.getElementById('slider');
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        slider.scrollBy({ left: slider.offsetWidth, behavior: 'smooth' });
+    });
+    document.getElementById('prevBtn').addEventListener('click', () => {
+        slider.scrollBy({ left: -slider.offsetWidth, behavior: 'smooth' });
+    });
+</script>
