@@ -1,12 +1,14 @@
 <?php
-// This intercepts the AJAX fetch request sent by the modal
+/**
+ * Samai Distillery - Interactive Province Map
+ * Reads pins from the `map_location` custom post type.
+ */
+
 if (isset($_GET['venue_id'])) {
     $venue_id = intval($_GET['venue_id']);
-    // This loads the specific card template
     include(get_template_directory() . '/template-parts/detail-card.php');
-    exit; 
+    exit;
 }
-
 
 $province = isset($_GET['province']) ? sanitize_text_field($_GET['province']) : '';
 
@@ -31,11 +33,11 @@ if ($province) {
         $is_center = get_post_meta($location->ID, '_is_center', true);
 
         if ($lat === '' || $lng === '') {
-            continue; // skip incomplete entries
+            continue;
         }
 
         $markers[] = [$location->post_title, (float) $lat, (float) $lng, $location->ID];
-        
+
         if ($is_center === '1') {
             $center = [(float) $lat, (float) $lng];
             $zoom   = (int) get_post_meta($location->ID, '_zoom', true) ?: 10;
@@ -43,21 +45,22 @@ if ($province) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive Map</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Map</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
   :root {
@@ -130,6 +133,11 @@ if ($province) {
     background: var(--brand-brown) !important;
     color: white !important;
     border: none !important;
+    width: 44px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+    font-size: 22px !important;
+    font-weight: 700;
   }
 
   .leaflet-bar a:hover {
@@ -147,65 +155,64 @@ if ($province) {
     box-shadow: -2px 2px 6px rgba(0, 0, 0, .35);
   }
 </style>
+
 </head>
 <body>
 
-<div class="map-wrapper">
-  <div class="map-card">
-    <div id="map"></div>
+  <div class="map-wrapper">
+    <div class="map-card">
+      <div id="map"></div>
+    </div>
   </div>
-</div>
 
-<script>
-(function () {
-  const mapData = {
-    center:  <?php echo json_encode($center); ?>,
-    zoom:    <?php echo json_encode($zoom); ?>,
-    markers: <?php echo json_encode($markers); ?>
-  };
+  <script>
+  (function () {
+    const mapData = {
+      center:  <?php echo json_encode($center); ?>,
+      zoom:    <?php echo json_encode($zoom); ?>,
+      markers: <?php echo json_encode($markers); ?>
+    };
 
-  function initMap({ center, zoom, markers }) {
-    const map = L.map('map', {
-      zoomControl: false,
-      attributionControl: false
-    }).setView(center, zoom);
+    function initMap({ center, zoom, markers }) {
+      const map = L.map('map', {
+        zoomControl: false,
+        attributionControl: false
+      }).setView(center, zoom);
 
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-      maxZoom: 20
-    }).addTo(map);
+      L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        maxZoom: 20
+      }).addTo(map);
 
-    const brownPin = L.divIcon({
-      className: 'custom-pin',
-      html: '<div class="pin-marker"></div>',
-      iconSize: [24, 24],
-      iconAnchor: [12, 24],
-      popupAnchor: [0, -18]
-    });
-
-    const bounds = markers.map(([label, lat, lng, id]) => {
-    L.marker([lat, lng], { icon: brownPin })
-      .addTo(map)
-      .on('click', function() {
-        // This sends the message to the parent page (landing page)
-        // so it can update the right-hand panel without reloading the map
-        window.parent.postMessage({ type: 'show_card', venue_id: id }, '*');
+      const brownPin = L.divIcon({
+        className: 'custom-pin',
+        html: '<div class="pin-marker"></div>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 24],
+        popupAnchor: [0, -18]
       });
-    return [lat, lng];
-  });
 
-    if (bounds.length > 1) {
-      map.fitBounds(bounds, { padding: [70, 70] });
-    } else if (bounds.length === 1) {
-      map.setView(bounds[0], zoom);
+      const bounds = markers.map(([label, lat, lng, id]) => {
+        L.marker([lat, lng], { icon: brownPin })
+          .addTo(map)
+          .on('click', function () {
+            window.parent.postMessage({ type: 'show_card', venue_id: id }, '*');
+          });
+        return [lat, lng];
+      });
+
+      if (bounds.length > 1) {
+        map.fitBounds(bounds, { padding: [70, 70] });
+      } else if (bounds.length === 1) {
+        map.setView(bounds[0], zoom);
+      }
     }
-  }
 
-  initMap(mapData);
-})();
-</script>
+    initMap(mapData);
+  })();
+  </script>
 
 </body>
 </html>
