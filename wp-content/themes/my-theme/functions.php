@@ -255,7 +255,7 @@ add_action('rest_api_init', function () {
         '_venue_address', 
         '_venue_hours', 
         '_venue_description', 
-        '_venue_drinks', 
+        '_venue_contact',
         '_venue_social'
     ];
     
