@@ -83,8 +83,6 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
     </div>
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@14.0.1/swiper-bundle.min.css"/>
-
 <style>
     .swiper {
       width: 100%;
@@ -366,6 +364,7 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
 
 <script>
     var swiper = new Swiper('.mySwiper', {
+        slidesPerView: 'auto',
         pagination: {
         el: '.swiper-pagination',
         dynamicBullets: true,
