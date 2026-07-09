@@ -192,10 +192,7 @@ function samai_venue_details_metabox_html($post) {
         <label>Description</label>
         <textarea name="venue_description" style="width:100%; height:100px;"><?php echo esc_textarea($description); ?></textarea>
     </div>
-    <div class="samai-field">
-        <label>Recommended Drinks</label>
-        <textarea name="venue_drinks" style="width:100%; height:60px;"><?php echo esc_textarea($drinks); ?></textarea>
-    </div>
+    
     <div class="samai-field">
         <label>Social Media Links</label>
         <textarea name="venue_social" style="width:100%; height:60px;"><?php echo esc_textarea($social); ?></textarea>
