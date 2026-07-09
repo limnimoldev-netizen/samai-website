@@ -111,7 +111,7 @@ function samai_map_location_save($post_id) {
         'venue_address'   => '_venue_address',
         'venue_hours'     => '_venue_hours',
         'venue_description' => '_venue_description',
-        'venue_drinks'    => '_venue_drinks',
+        'venue_contact'     => '_venue_contact',
         'venue_social'    => '_venue_social'
     ];
 
@@ -173,11 +173,12 @@ function samai_venue_details_metabox() {
 add_action('add_meta_boxes', 'samai_venue_details_metabox');
 
 function samai_venue_details_metabox_html($post) {
-    // Fetch values
+    // 1. Define the missing variable
     $address     = get_post_meta($post->ID, '_venue_address', true);
     $hours       = get_post_meta($post->ID, '_venue_hours', true);
     $description = get_post_meta($post->ID, '_venue_description', true);
     $drinks      = get_post_meta($post->ID, '_venue_drinks', true);
+    $contact     = get_post_meta($post->ID, '_venue_contact', true); 
     $social      = get_post_meta($post->ID, '_venue_social', true);
     ?>
     <div class="samai-field">
@@ -192,7 +193,10 @@ function samai_venue_details_metabox_html($post) {
         <label>Description</label>
         <textarea name="venue_description" style="width:100%; height:100px;"><?php echo esc_textarea($description); ?></textarea>
     </div>
-    
+    <div class="samai-field">
+        <label>Contact</label>
+        <textarea name="venue_contact" style="width:100%; height:60px;"><?php echo esc_textarea($contact); ?></textarea>
+    </div>
     <div class="samai-field">
         <label>Social Media Links</label>
         <textarea name="venue_social" style="width:100%; height:60px;"><?php echo esc_textarea($social); ?></textarea>
