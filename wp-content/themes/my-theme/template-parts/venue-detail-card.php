@@ -7,8 +7,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
- <section class="p-8 rounded-xl bg-[#FAF9F6] w-150 sm:w-100 md:w-100 border border-gray-300 ">
-    <a href="" class="text-[#b7936e] flex justify-end md:text-lg text-2xl underline decoration-[#b7936e]">Close</a>
+ <section class="bg-[#FAF9F6] rounded-xl 
+           p-4 sm:p-6 lg:p-8
+           w-[95vw] sm:w-[420px] md:w-[480px] lg:w-[520px]
+           max-h-[90vh]
+           overflow-y-auto
+           scrollbar-hide">
+    <a href="#" id="close-card" class="text-[#b7936e] flex justify-end md:text-lg text-2xl underline decoration-[#b7936e]">Close</a>
     <h1  class="text-4xl md:text-3xl md:py-2  py-2 font-bold text-[#b7936e]">Samai Cocktail Bar</h1>
      <div class="relative  ">
         <button id="prev" class="absolute left-[-35px] md:left-[-35px] top-1/2 -translate-y-1/2 z-10  px-3 py-2 rounded">
@@ -17,12 +22,11 @@
         </button>
 
         <div id="slider" class="flex overflow-x-hidden gap-4 scroll-smooth scrollbar-hide">
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/test.png" 
-             alt="LOGO">
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/bg-map.png" 
-             alt="Cambodia Background Map">
+            
+                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/test.png" alt="LOGO">
+                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/bg-map.png" alt="Cambodia Background Map">
 
-            </div>
+        </div>
 
         <button id="next" class="absolute right-[-35px] md:right-[-35px] top-1/2 -translate-y-1/2 z-10  px-3 py-2 rounded">
             <i class="fa-solid fa-angle-right text-[#b7936e] text-2xl  "></i>
