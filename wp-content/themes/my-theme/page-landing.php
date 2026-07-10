@@ -2,6 +2,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,700;1,300&family=Mr+Dafoe&display=swap" rel="stylesheet">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
 <style>
@@ -252,7 +254,11 @@
             fetch('/interactive-map/?venue_id=' + event.data.venue_id)
                 .then(response => response.text())
                 .then(html => {
+
                     cardContent.innerHTML = html;
+
+                    initVenueSlider();
+
                 });
         }
 
@@ -278,4 +284,31 @@
             spans[2].classList.toggle('-translate-y-2');
         });
     }
+
+    function initVenueSlider() {
+
+    const slider = document.querySelector("#cardContent #slider");
+    const next = document.querySelector("#cardContent #next");
+    const prev = document.querySelector("#cardContent #prev");
+
+    if (!slider || !next || !prev) {
+        console.log("Slider not found");
+        return;
+    }
+
+    next.onclick = function () {
+        slider.scrollBy({
+            left: slider.clientWidth,
+            behavior: "smooth"
+        });
+    };
+
+    prev.onclick = function () {
+        slider.scrollBy({
+            left: -slider.clientWidth,
+            behavior: "smooth"
+        });
+    };
+}
+
 </script>

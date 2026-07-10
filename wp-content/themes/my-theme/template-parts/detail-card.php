@@ -29,22 +29,19 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
     <?php endif; ?>
 
     <!-- Image Slider - Static (no scrollbar) -->
-    <div class="venue-slider swiper mySwiper">
-        <div class="venue-slider-track swiper-wrapper">
-            <div class="swiper-slide venue-slide">
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 1.jpg" alt="Venue view 1">
-            </div>
-            <div class="venue-slide">
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 2.webp" alt="Venue view 2">
-            </div>
-            <div class="swiper-slide venue-slide">
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 3.jpg" alt="Venue view 3">
-            </div>
-        </div>
-        <!-- Static dots indicator -->
-        <div class="swiper-pagination"></div>
+    <div class="relative mb-6">
+        <button id="prev" class="slider-nav slider-prev">
+            <i class="fa-solid fa-angle-left slider-icon"></i>
+        </button>
 
-        <script src="https://cdn.jsdelivr.net/npm/swiper@14.0.1/swiper-bundle.min.js"></script>
+        <div id="slider" class="slider-wrapper">
+            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 1.jpg" alt="">
+            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 2.webp" alt="">
+        </div>
+
+        <button id="next" class="slider-nav slider-next">
+            <i class="fa-solid fa-angle-right slider-icon"></i>
+        </button>
     </div>
 
     <!-- Content -->
@@ -66,10 +63,18 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
         <!-- Contact -->
         <div class="venue-info-group">
             <span class="venue-label">Contact</span>
-            <p class="venue-text">
-                <?php echo !empty($phone) ? esc_html($phone) : '+855 23 936 860'; ?><br>
-                <?php echo !empty($email) ? esc_html($email) : 'phnompenh.fnbreservation@rosewoodhotels.com'; ?>
-            </p>
+
+            <div class="contact-item">
+                <i class="fa-solid fa-phone"></i>
+                <span>+855 23 936 860</span>
+            </div>
+
+            <div class="contact-item">
+                <i class="fa-solid fa-envelope"></i>
+                <a href="mailto:phnompenh.fnbreservation@rosewoodhotels.com">
+                    phnompenh.fnbreservation@rosewoodhotels.com
+                </a>
+            </div>
         </div>
 
         <!-- Social -->
@@ -84,25 +89,78 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
 </div>
 
 <style>
-    .swiper {
-      width: 100%;
-      height: 100%;
+    .slider-wrapper{
+        display:flex;
+        overflow:hidden;
+        scroll-behavior:smooth;
+        border-radius:18px;
     }
 
-    .swiper-slide {
-      text-align: center;
-      font-size: 18px;
-      background: #444;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .slider-wrapper img{
+        flex:0 0 100%;
+        width:100%;
+        height:230px;
+        object-fit:cover;
     }
 
-    .swiper-slide img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .slider-nav{
+        position:absolute;
+        top:50%;
+        width: 25px;
+        height: 25px;
+        transform:translateY(-50%);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#fff;
+        cursor:pointer;
+        z-index:100;
+        transition:all .25s ease;
+    }
+
+    .slider-prev{
+        left:14px;
+    }
+
+    .slider-next{
+        right:14px;
+    }
+
+    .slider-icon{
+        color:#ffffff !important;
+        font-size:14px;
+        line-height:1;
+        transition:all .25s ease;
+    }
+
+    .slider-nav:hover .slider-icon{
+        color:#ffffff !important;
+    }
+
+    .slider-nav i{
+        font-size:13px;
+        transition:transform .25s ease;
+    }
+
+    .slider-nav:active{
+        transform:translateY(-50%) scale(.95);
+    }
+
+    .slider-nav:focus{
+        outline:none;
+    }
+
+    .slider-nav::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        border-radius:50%;
+        background:linear-gradient(
+            180deg,
+            rgba(255,255,255,.28),
+            rgba(255,255,255,0)
+        );
+        pointer-events:none;
     }
     .venue-card {
         position: relative;
@@ -118,9 +176,7 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
     .venue-close-btn {
         width: 36px;
         height: 36px;
-        border-radius: 50%;
         border: none;
-        background: rgba(0, 0, 0, 0.04);
         color: #6b5a4a;
         cursor: pointer;
         display: flex;
@@ -131,7 +187,6 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
     }
 
     .venue-close-btn:hover {
-        background: rgba(183, 147, 110, 0.12);
         color: #b7936e;
         transform: rotate(90deg);
     }
@@ -160,16 +215,6 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
         letter-spacing: 0.3px;
     }
 
-    /* ===== STATIC SLIDER - NO SCROLLBAR ===== */
-    .venue-slider {
-        position: relative;
-        border-radius: 16px;
-        overflow: hidden;
-        margin-bottom: 20px;
-        background: #f3f0ea;
-        aspect-ratio: 16 / 10;
-    }
-
     #detailContainer {
         scrollbar-width: none;
         -ms-overflow-style: none;
@@ -177,48 +222,6 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
 
     #detailContainer::-webkit-scrollbar {
         display: none;
-    }
-
-    .venue-slide {
-        flex: 0 0 100%;
-        height: 100%;
-        scroll-snap-align: start;
-    }
-
-    .venue-slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-        pointer-events: none; /* Prevents dragging */
-    }
-
-    .venue-slider-dots {
-        position: absolute;
-        bottom: 12px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 8px;
-        background: rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(4px);
-        padding: 6px 12px;
-        border-radius: 30px;
-        pointer-events: none; /* Prevents interaction */
-    }
-
-    .venue-slider-dots .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.5);
-        transition: all 0.3s ease;
-    }
-
-    .venue-slider-dots .dot.active {
-        background: #ffffff;
-        width: 20px;
-        border-radius: 10px;
     }
 
     .venue-content {
@@ -286,7 +289,32 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
         border-bottom-color: #b7936e;
     }
 
-    /* ===== RESPONSIVE ===== */
+    .contact-item{
+        display:flex;
+        align-items:flex-start;
+        gap:10px;
+        margin-top:8px;
+        font-size:13px;
+        color:#3d342c;
+    }
+
+    .contact-item i{
+        color:#b7936e;
+        width:16px;
+        margin-top:3px;
+    }
+
+    .contact-item a{
+        color:inherit;
+        text-decoration:none;
+        overflow-wrap:anywhere;
+        word-break:break-word;
+    }
+
+    .contact-item a:hover{
+        color:#b7936e;
+    }
+
     @media (max-width: 480px) {
         .venue-card {
             padding: 20px 18px 24px;
@@ -298,11 +326,6 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
         .venue-title {
             font-size: 20px;
             padding-right: 36px;
-        }
-
-        .venue-slider {
-            aspect-ratio: 16 / 11;
-            border-radius: 14px;
         }
 
         .venue-text {
@@ -354,20 +377,5 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
         .venue-subtitle {
             font-size: 12px;
         }
-
-        .venue-slider {
-            aspect-ratio: 16 / 12;
-            border-radius: 12px;
-        }
     }
 </style>
-
-<script>
-    var swiper = new Swiper('.mySwiper', {
-        slidesPerView: 'auto',
-        pagination: {
-        el: '.swiper-pagination',
-        dynamicBullets: true,
-        },
-    });
-</script>
