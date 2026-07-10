@@ -2,13 +2,21 @@
 $venue_id = isset($_GET['venue_id']) ? intval($_GET['venue_id']) : 0;
 if (!$venue_id) return;
 
-// Fetch meta data - Ensure these field names match your WordPress setup
-$subtitle = get_post_meta($venue_id, '_venue_subtitle', true);
-$address  = get_post_meta($venue_id, '_venue_address', true);
-$hours    = get_post_meta($venue_id, '_venue_hours', true);
-$serves   = get_post_meta($venue_id, '_venue_serves', true);
-$email    = get_post_meta($venue_id, '_venue_email', true);
-$phone    = get_post_meta($venue_id, '_venue_phone', true);
+$address   = get_post_meta($venue_id, '_venue_address', true);
+$hours     = get_post_meta($venue_id, '_venue_hours', true);
+$description = get_post_meta($venue_id, '_venue_description', true);
+$serves    = get_post_meta($venue_id, '_venue_serves', true);
+
+$phone     = get_post_meta($venue_id, '_venue_phone', true);
+$email     = get_post_meta($venue_id, '_venue_email', true);
+
+$facebook  = get_post_meta($venue_id, '_venue_facebook', true);
+$instagram = get_post_meta($venue_id, '_venue_instagram', true);
+$gallery = get_post_meta($venue_id, '_venue_gallery', true);
+
+if (!is_array($gallery)) {
+    $gallery = [];
+}
 ?>
 
 <div class="venue-card">
@@ -23,20 +31,35 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
         </button>
     </div>
     
-    <!-- Subtitle -->
-    <?php if (!empty($subtitle)): ?>
-        <p class="venue-subtitle"><?php echo esc_html($subtitle); ?></p>
-    <?php endif; ?>
 
-    <!-- Image Slider - Static (no scrollbar) -->
     <div class="relative mb-6">
         <button id="prev" class="slider-nav slider-prev">
             <i class="fa-solid fa-angle-left slider-icon"></i>
         </button>
 
         <div id="slider" class="slider-wrapper">
-            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 1.jpg" alt="">
-            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/sora 2.webp" alt="">
+
+            <?php
+            // Show the Featured Image first
+            if (has_post_thumbnail($venue_id)) :
+            ?>
+                <img
+                    src="<?php echo esc_url(get_the_post_thumbnail_url($venue_id, 'large')); ?>"
+                    alt="<?php echo esc_attr(get_the_title($venue_id)); ?>">
+            <?php endif; ?>
+
+            <?php foreach ($gallery as $image_id) :
+
+                $image = wp_get_attachment_image_url($image_id, 'large');
+
+                if (!$image) continue;
+            ?>
+
+                <img
+                src="<?php echo esc_url($image); ?>"
+                alt="<?php echo esc_attr(get_the_title($venue_id)); ?>">
+
+                <?php endforeach; ?>
         </div>
 
         <button id="next" class="slider-nav slider-next">
@@ -44,45 +67,87 @@ $phone    = get_post_meta($venue_id, '_venue_phone', true);
         </button>
     </div>
 
-    <!-- Content -->
     <div class="venue-content">
-        <!-- Hours -->
+        <div class="venue-info-group">
+            <span class="venue-label">Address</span>
+            <p class="venue-text">
+                <?php echo !empty($address) ? esc_html($address) : ''; ?>
+            </p>
+        </div>
+
         <div class="venue-info-group">
             <span class="venue-label">Opening Hours</span>
             <p class="venue-text"><?php echo !empty($hours) ? esc_html($hours) : 'Open daily, 5:00 PM–12:00 AM'; ?></p>
         </div>
 
-        <!-- Description -->
         <div class="venue-info-group">
             <span class="venue-label">Description</span>
+
             <p class="venue-text venue-description">
-                <?php echo !empty($serves) ? esc_html($serves) : 'A sky-high cocktail bar perched on the 37th floor of Rosewood Phnom Penh, Sora offers one of the city\'s most impressive skyline views. With its elegant indoor lounge, outdoor terrace, curated cocktails, and a refined whisky library, it is a sophisticated place for sunset drinks, good conversations, and memorable nights above Phnom Penh.'; ?>
+                <?php echo !empty($description) ? nl2br(esc_html($description)) : ''; ?>
             </p>
         </div>
 
-        <!-- Contact -->
+        <div class="venue-info-group">
+            <span class="venue-label">Samai Signature Serves</span>
+
+            <p class="venue-text">
+                <?php echo !empty($serves) ? nl2br(esc_html($serves)) : ''; ?>
+            </p>
+        </div>
+
+    <?php
+        $lat = get_post_meta($venue_id, '_lat', true);
+        $lng = get_post_meta($venue_id, '_lng', true);
+
+        if (!empty($lat) && !empty($lng)): ?>
+            <div class="venue-info-group">
+                <span class="venue-label">Location</span>
+                <div class="contact-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <a href="https://www.google.com/maps/search/?api=1&query=<?php echo esc_attr($lat); ?>,<?php echo esc_attr($lng); ?>" target="_blank">
+                        View on Google Maps
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
         <div class="venue-info-group">
             <span class="venue-label">Contact</span>
 
-            <div class="contact-item">
-                <i class="fa-solid fa-phone"></i>
-                <span>+855 23 936 860</span>
-            </div>
+            <?php if ($phone): ?>
+                <div class="contact-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <span><?php echo esc_html($phone); ?></span>
+                </div>
+            <?php endif; ?>
 
-            <div class="contact-item">
-                <i class="fa-solid fa-envelope"></i>
-                <a href="mailto:phnompenh.fnbreservation@rosewoodhotels.com">
-                    phnompenh.fnbreservation@rosewoodhotels.com
-                </a>
-            </div>
+            <?php if ($email): ?>
+                <div class="contact-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <a href="mailto:<?php echo esc_attr($email); ?>">
+                        <?php echo esc_html($email); ?>
+                    </a>
+                </div>
+            <?php endif; ?>
         </div>
 
-        <!-- Social -->
         <div class="venue-info-group">
             <span class="venue-label">Follow Us</span>
+
             <div class="venue-social-links">
-                <a href="#" class="venue-social-link">Instagram</a>
-                <a href="#" class="venue-social-link">Facebook</a>
+
+                <?php if ($instagram): ?>
+                    <a href="<?php echo esc_url($instagram); ?>" target="_blank" class="venue-social-link">
+                        Instagram
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($facebook): ?>
+                    <a href="<?php echo esc_url($facebook); ?>" target="_blank" class="venue-social-link">
+                        Facebook
+                    </a>
+                <?php endif; ?>
+
             </div>
         </div>
     </div>
