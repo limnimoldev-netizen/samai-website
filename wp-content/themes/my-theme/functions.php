@@ -298,38 +298,38 @@ function samai_venue_gallery_metabox_html($post) {
         <?php endfor; ?>
     </div>
     <script>
-jQuery(document).ready(function($) {
-    $('.upload-gallery-btn').click(function(e) {
-        e.preventDefault();
+    jQuery(document).ready(function($) {
+        $('.upload-gallery-btn').click(function(e) {
+            e.preventDefault();
 
-        var btn = $(this);
+            var btn = $(this);
 
-        var frame = wp.media({
-            title: 'Select Image',
-            multiple: false
+            var frame = wp.media({
+                title: 'Select Image',
+                multiple: false
+            });
+
+            frame.on('select', function() {
+
+                var attachment = frame.state().get('selection').first().toJSON();
+
+                var imageUrl = attachment.url;
+
+                if (attachment.sizes && attachment.sizes.thumbnail) {
+                    imageUrl = attachment.sizes.thumbnail.url;
+                }
+
+                btn.prev('.image-preview').html(
+                    '<img src="' + imageUrl + '" style="width:100px;height:100px;object-fit:cover;">'
+                );
+
+                btn.prev().prev('.gallery-id').val(attachment.id);
+            });
+
+            frame.open();
         });
-
-        frame.on('select', function() {
-
-            var attachment = frame.state().get('selection').first().toJSON();
-
-            var imageUrl = attachment.url;
-
-            if (attachment.sizes && attachment.sizes.thumbnail) {
-                imageUrl = attachment.sizes.thumbnail.url;
-            }
-
-            btn.prev('.image-preview').html(
-                '<img src="' + imageUrl + '" style="width:100px;height:100px;object-fit:cover;">'
-            );
-
-            btn.prev().prev('.gallery-id').val(attachment.id);
-        });
-
-        frame.open();
     });
-});
-</script>
+    </script>
     <?php
 }
 
