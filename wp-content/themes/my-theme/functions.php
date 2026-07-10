@@ -30,6 +30,18 @@ function samai_register_map_location_cpt() {
 }
 add_action('init', 'samai_register_map_location_cpt');
 
+// Central list of valid provinces - used by the dropdown AND for validation
+function samai_get_provinces() {
+    return [
+        'siem-reap'    => 'Siem Reap',
+        'battambang'   => 'Battambang',
+        'phnom-penh'   => 'Phnom Penh',
+        'koh-rong'     => 'Koh Rong',
+        'kampot'       => 'Kampot',
+        'sihanoukville'=> 'Sihanoukville',
+    ];
+}
+
 // 2. Add the meta box to the edit screen
 function samai_map_location_metabox() {
     add_meta_box(
@@ -52,12 +64,14 @@ function samai_map_location_metabox_html($post) {
     $lng       = get_post_meta($post->ID, '_lng', true);
     $zoom      = get_post_meta($post->ID, '_zoom', true);
     $is_center = get_post_meta($post->ID, '_is_center', true);
+    $provinces = samai_get_provinces();
     ?>
     <style>
         .samai-field { margin-bottom: 15px; }
         .samai-field label { display: block; font-weight: 600; margin-bottom: 4px; }
         .samai-field input[type="text"],
-        .samai-field input[type="number"] {
+        .samai-field input[type="number"],
+        .samai-field select {
             width: 100%;
             max-width: 400px;
             padding: 6px 8px;
@@ -66,8 +80,15 @@ function samai_map_location_metabox_html($post) {
     </style>
 
     <div class="samai-field">
-        <label>Province Slug <span class="samai-hint">(must match the URL param, e.g. siem-reap, battambang, phnom-penh, koh-rong, kampot)</span></label>
-        <input type="text" name="province_slug" value="<?php echo esc_attr($province); ?>" placeholder="e.g. siem-reap">
+        <label>Province <span class="samai-hint">(which province group this pin belongs to — controls which map it appears on)</span></label>
+        <select name="province_slug">
+            <option value="">— Select a province —</option>
+            <?php foreach ($provinces as $slug => $label) : ?>
+                <option value="<?php echo esc_attr($slug); ?>" <?php selected($province, $slug); ?>>
+                    <?php echo esc_html($label); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
     </div>
 
     <div class="samai-field">
@@ -102,17 +123,27 @@ function samai_map_location_save($post_id) {
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
     if (!current_user_can('edit_post', $post_id)) return;
 
-    // List of all fields to save
+    // Validate province_slug against the fixed whitelist instead of trusting free text
+    if (isset($_POST['province_slug'])) {
+        $provinces = samai_get_provinces();
+        $submitted = sanitize_text_field($_POST['province_slug']);
+        if (array_key_exists($submitted, $provinces)) {
+            update_post_meta($post_id, '_province_slug', $submitted);
+        } else {
+            delete_post_meta($post_id, '_province_slug');
+        }
+    }
+
+    // List of all remaining fields to save
     $fields = [
-        'province_slug'   => '_province_slug',
-        'lat'             => '_lat',
-        'lng'             => '_lng',
-        'zoom'            => '_zoom',
-        'venue_address'   => '_venue_address',
-        'venue_hours'     => '_venue_hours',
-        'venue_description' => '_venue_description',
-        'venue_contact'     => '_venue_contact',
-        'venue_social'    => '_venue_social'
+        'lat'                => '_lat',
+        'lng'                => '_lng',
+        'zoom'               => '_zoom',
+        'venue_address'      => '_venue_address',
+        'venue_hours'        => '_venue_hours',
+        'venue_description'  => '_venue_description',
+        'venue_contact'      => '_venue_contact',
+        'venue_social'       => '_venue_social',
     ];
 
     foreach ($fields as $input_name => $meta_key) {
@@ -123,7 +154,7 @@ function samai_map_location_save($post_id) {
 
     update_post_meta($post_id, '_is_center', isset($_POST['is_center']) ? '1' : '0');
 
-    // Add this inside samai_map_location_save()
+    // Gallery save
     if (isset($_POST['samai_gallery_nonce']) && wp_verify_nonce($_POST['samai_gallery_nonce'], 'samai_gallery_save')) {
         if (isset($_POST['venue_gallery'])) {
             $gallery = array_map('intval', $_POST['venue_gallery']);
@@ -146,7 +177,9 @@ add_filter('manage_map_location_posts_columns', 'samai_map_location_columns');
 function samai_map_location_columns_content($column, $post_id) {
     switch ($column) {
         case 'province':
-            echo esc_html(get_post_meta($post_id, '_province_slug', true));
+            $slug = get_post_meta($post_id, '_province_slug', true);
+            $provinces = samai_get_provinces();
+            echo esc_html($provinces[$slug] ?? $slug ?: '—');
             break;
         case 'coords':
             $lat = get_post_meta($post_id, '_lat', true);
@@ -159,6 +192,7 @@ function samai_map_location_columns_content($column, $post_id) {
     }
 }
 add_action('manage_map_location_posts_custom_column', 'samai_map_location_columns_content', 10, 2);
+
 // 6. Add a SECOND Meta Box for Venue Details
 function samai_venue_details_metabox() {
     add_meta_box(
@@ -173,7 +207,6 @@ function samai_venue_details_metabox() {
 add_action('add_meta_boxes', 'samai_venue_details_metabox');
 
 function samai_venue_details_metabox_html($post) {
-    // 1. Define the missing variable
     $address     = get_post_meta($post->ID, '_venue_address', true);
     $hours       = get_post_meta($post->ID, '_venue_hours', true);
     $description = get_post_meta($post->ID, '_venue_description', true);
