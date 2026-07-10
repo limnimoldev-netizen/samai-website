@@ -134,16 +134,20 @@ function samai_map_location_save($post_id) {
         }
     }
 
-    // List of all remaining fields to save
     $fields = [
         'lat'                => '_lat',
         'lng'                => '_lng',
         'zoom'               => '_zoom',
+
         'venue_address'      => '_venue_address',
         'venue_hours'        => '_venue_hours',
         'venue_description'  => '_venue_description',
-        'venue_contact'      => '_venue_contact',
-        'venue_social'       => '_venue_social',
+        'venue_serves'       => '_venue_serves',
+
+        'venue_phone'        => '_venue_phone',
+        'venue_email'        => '_venue_email',
+        'venue_facebook'     => '_venue_facebook',
+        'venue_instagram'    => '_venue_instagram',
     ];
 
     foreach ($fields as $input_name => $meta_key) {
@@ -210,9 +214,11 @@ function samai_venue_details_metabox_html($post) {
     $address     = get_post_meta($post->ID, '_venue_address', true);
     $hours       = get_post_meta($post->ID, '_venue_hours', true);
     $description = get_post_meta($post->ID, '_venue_description', true);
-    $drinks      = get_post_meta($post->ID, '_venue_drinks', true);
-    $contact     = get_post_meta($post->ID, '_venue_contact', true); 
-    $social      = get_post_meta($post->ID, '_venue_social', true);
+    $serves      = get_post_meta($post->ID, '_venue_serves', true);
+    $phone       = get_post_meta($post->ID, '_venue_phone', true);
+    $email       = get_post_meta($post->ID, '_venue_email', true);
+    $facebook    = get_post_meta($post->ID, '_venue_facebook', true);
+    $instagram   = get_post_meta($post->ID, '_venue_instagram', true);
     ?>
     <div class="samai-field">
         <label>Address</label>
@@ -227,12 +233,45 @@ function samai_venue_details_metabox_html($post) {
         <textarea name="venue_description" style="width:100%; height:100px;"><?php echo esc_textarea($description); ?></textarea>
     </div>
     <div class="samai-field">
-        <label>Contact</label>
-        <textarea name="venue_contact" style="width:100%; height:60px;"><?php echo esc_textarea($contact); ?></textarea>
+        <label>Samai Signature Serves</label>
+        <textarea
+            name="venue_serves"
+            style="width:100%; height:80px;"><?php echo esc_textarea($serves); ?></textarea>
     </div>
     <div class="samai-field">
-        <label>Social Media Links</label>
-        <textarea name="venue_social" style="width:100%; height:60px;"><?php echo esc_textarea($social); ?></textarea>
+        <label>Phone</label>
+        <input
+            type="text"
+            name="venue_phone"
+            value="<?php echo esc_attr($phone); ?>"
+            style="width:100%">
+    </div>
+
+    <div class="samai-field">
+        <label>Email</label>
+        <input
+            type="email"
+            name="venue_email"
+            value="<?php echo esc_attr($email); ?>"
+            style="width:100%">
+    </div>
+
+    <div class="samai-field">
+        <label>Facebook</label>
+        <input
+            type="url"
+            name="venue_facebook"
+            value="<?php echo esc_attr($facebook); ?>"
+            style="width:100%">
+    </div>
+
+    <div class="samai-field">
+        <label>Instagram</label>
+        <input
+            type="url"
+            name="venue_instagram"
+            value="<?php echo esc_attr($instagram); ?>"
+            style="width:100%">
     </div>
     <?php
 }
@@ -279,17 +318,23 @@ function samai_venue_gallery_metabox_html($post) {
  */
 add_action('rest_api_init', function () {
     $fields = [
-        '_province_slug', 
-        '_lat', 
-        '_lng', 
-        '_zoom', 
-        '_is_center', 
+        '_province_slug',
+        '_lat',
+        '_lng',
+        '_zoom',
+        '_is_center',
+
         '_venue_gallery',
-        '_venue_address', 
-        '_venue_hours', 
-        '_venue_description', 
-        '_venue_contact',
-        '_venue_social'
+
+        '_venue_address',
+        '_venue_hours',
+        '_venue_description',
+        '_venue_serves',
+
+        '_venue_phone',
+        '_venue_email',
+        '_venue_facebook',
+        '_venue_instagram',
     ];
     
     foreach ($fields as $field) {
