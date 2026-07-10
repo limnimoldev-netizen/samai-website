@@ -1,6 +1,6 @@
 <?php
 /**
- * Map Locations - Custom Post Type + Meta Boxes
+ *  ap Locations - Custom Post Type + Meta Boxes
  * Add this to your theme's functions.php, or save as a standalone plugin file.
  */
 
