@@ -23,8 +23,8 @@
 
         <div id="slider" class="flex overflow-x-hidden gap-4 scroll-smooth scrollbar-hide">
             
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/test.png" alt="LOGO">
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/bg-map.png" alt="Cambodia Background Map">
+                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/bg-map.png" alt="LOGO">
+                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/image/bar.png" alt="Cambodia Background Map">
 
         </div>
 
