@@ -344,7 +344,7 @@ if ($province) {
         attributionControl: false
       }).setView(center, zoom);
 
-      L.control.zoom({ position: 'bottomright' }).addTo(map);
+      L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
       L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
