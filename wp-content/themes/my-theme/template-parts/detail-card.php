@@ -20,7 +20,7 @@ if (!is_array($gallery)) {
 ?>
 
 <div class="venue-card">
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex justify-between items-center gap-3 mb-5">
         <h2 class="venue-title"><?php echo get_the_title($venue_id); ?></h2>
 
         <button class="venue-close-btn" onclick="window.parent.postMessage({type: 'close_card'}, '*')">

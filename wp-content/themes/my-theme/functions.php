@@ -62,8 +62,10 @@ function samai_map_location_metabox_html($post) {
     $province  = get_post_meta($post->ID, '_province_slug', true);
     $lat       = get_post_meta($post->ID, '_lat', true);
     $lng       = get_post_meta($post->ID, '_lng', true);
+    $google_map = get_post_meta($post->ID, '_google_map', true);
     $zoom      = get_post_meta($post->ID, '_zoom', true);
-    $is_center = get_post_meta($post->ID, '_is_center', true);
+    $is_center = get_post_meta($post->ID, '_is_center',
+        '_google_map', true);
     $provinces = samai_get_provinces();
     ?>
     <style>
@@ -92,14 +94,11 @@ function samai_map_location_metabox_html($post) {
     </div>
 
     <div class="samai-field">
-        <label>Latitude</label>
-        <input type="text" name="lat" value="<?php echo esc_attr($lat); ?>" placeholder="e.g. 13.4125">
+        <label>Google Maps URL</label>
+        <input type="text" name="google_map" value="<?php echo esc_attr($google_map); ?>" placeholder="Paste full Google Maps URL">
+        <p class="samai-hint">Coordinates are extracted automatically.</p>
     </div>
-
-    <div class="samai-field">
-        <label>Longitude</label>
-        <input type="text" name="lng" value="<?php echo esc_attr($lng); ?>" placeholder="e.g. 103.8660">
-    </div>
+    <div class="samai-field"><strong>Detected Coordinates:</strong><br>Latitude: <?php echo esc_html($lat ?: 'Not detected'); ?><br>Longitude: <?php echo esc_html($lng ?: 'Not detected'); ?></div>
 
     <div class="samai-field">
         <label>Zoom Level <span class="samai-hint">(only used if "Map Center" below is checked)</span></label>
@@ -134,6 +133,15 @@ function samai_map_location_save($post_id) {
         }
     }
 
+    if(isset($_POST['google_map'])){
+        $url=sanitize_text_field($_POST['google_map']);
+        update_post_meta($post_id,'_google_map',$url);
+        if(preg_match('/@(-?\d+\.\d+),(-?\d+\.\d+)/',$url,$m) || preg_match('/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/',$url,$m)){
+            update_post_meta($post_id,'_lat',$m[1]);
+            update_post_meta($post_id,'_lng',$m[2]);
+        }
+    }
+
     $fields = [
         'lat'                => '_lat',
         'lng'                => '_lng',
@@ -156,7 +164,8 @@ function samai_map_location_save($post_id) {
         }
     }
 
-    update_post_meta($post_id, '_is_center', isset($_POST['is_center']) ? '1' : '0');
+    update_post_meta($post_id, '_is_center',
+        '_google_map', isset($_POST['is_center']) ? '1' : '0');
 
     // Gallery save
     if (isset($_POST['samai_gallery_nonce']) && wp_verify_nonce($_POST['samai_gallery_nonce'], 'samai_gallery_save')) {
@@ -191,7 +200,8 @@ function samai_map_location_columns_content($column, $post_id) {
             echo esc_html($lat . ', ' . $lng);
             break;
         case 'center':
-            echo get_post_meta($post_id, '_is_center', true) === '1' ? '✓' : '';
+            echo get_post_meta($post_id, '_is_center',
+        '_google_map', true) === '1' ? '✓' : '';
             break;
     }
 }
@@ -337,12 +347,22 @@ function samai_venue_gallery_metabox_html($post) {
  * EXPOSE META FIELDS TO REST API
  */
 add_action('rest_api_init', function () {
+    if(isset($_POST['google_map'])){
+        $url=sanitize_text_field($_POST['google_map']);
+        update_post_meta($post_id,'_google_map',$url);
+        if(preg_match('/@(-?\d+\.\d+),(-?\d+\.\d+)/',$url,$m) || preg_match('/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/',$url,$m)){
+            update_post_meta($post_id,'_lat',$m[1]);
+            update_post_meta($post_id,'_lng',$m[2]);
+        }
+    }
+
     $fields = [
         '_province_slug',
         '_lat',
         '_lng',
         '_zoom',
         '_is_center',
+        '_google_map',
 
         '_venue_gallery',
 
