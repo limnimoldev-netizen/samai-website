@@ -31,7 +31,6 @@ if (!is_array($gallery)) {
         </button>
     </div>
     
-`
     <div class="relative mb-6">
         <button id="prev" class="slider-nav slider-prev">
             <i class="fa-solid fa-angle-left slider-icon"></i>
